@@ -1,5 +1,6 @@
 require 'hashdiff'
 require 'airrecord'
+require 'dotenv/load'
 
 Airrecord.api_key = ENV['AIRTABLE_API_KEY']
 
@@ -52,7 +53,7 @@ class Book < Airrecord::Table
 
   def goodreads_id
     query = self["ISBN"] if self["ISBN"]
-    query ||= "\"#{self[:title]}\""
+    query ||= "\"#{self["Title"]}\""
 
     search = goodreads_client.search_books(query)
     if search.results.respond_to?(:work)
@@ -94,7 +95,7 @@ class Book < Airrecord::Table
     }.compact.uniq
   end
 
-  def populate_from_goodreads(prevent_duplicates_from: [])
+  def populate_from_goodreads(prevent_duplicates_from: Book.all)
     book = goodreads_book
 
     unless book
@@ -144,9 +145,9 @@ class Book < Airrecord::Table
 
 
     if flagged
-      Rollbar.warn("Skipping book", title: self[:title])
+      Rollbar.warn("Skipping book", title: self["Title"])
     elsif prevent_duplicates_from.find { |other| other["ISBN"] == self["ISBN"] }
-      $stderr.puts "Skipping #{self[:title]} due to duplicate"
+      $stderr.puts "Skipping #{self["Title"]} due to duplicate"
     else
       if self.new_record?
         self.create
