@@ -11,3 +11,4 @@ gem 'dotenv'
 gem 'rollbar'
 
 gem 'pry-byebug'
+gem 'rake'
