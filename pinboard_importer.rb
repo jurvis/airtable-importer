@@ -6,8 +6,8 @@ require 'faraday_middleware'
 
 require_relative 'model/book'
 
-class BookImport
-  def pinboard
+class PinboardImporter
+  def import_to_airtable 
     pinboard = Pinboard::Client.new(:token => ENV['PINBOARD_TOKEN'])
     posts = pinboard.posts(:tag => 'books').to_enum(:each).map { |bookmark| 
       if URI(bookmark.href).host =~ /\A(www\.)?amazon\.(com|sg)/
