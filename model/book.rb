@@ -5,8 +5,14 @@ require 'dotenv/load'
 Airrecord.api_key = ENV['AIRTABLE_API_KEY']
 
 class Book < Airrecord::Table
+  class Endorser < Airrecord::Table
+    self.base_key = ENV['AIRTABLE_BASE_KEY']
+    self.table_name = "Endorsers"
+  end
   self.base_key = ENV['AIRTABLE_BASE_KEY']
   self.table_name = "Books"
+
+  has_many :endorsements, class: 'Book::Endorser', column: 'Endorsements'
 
   GOODREADS_BLACKLIST = %w(
     to-read favorites currently-reading owned
@@ -95,7 +101,7 @@ class Book < Airrecord::Table
     }.compact.uniq
   end
 
-  def populate_from_goodreads(prevent_duplicates_from: Book.all)
+  def populate_from_goodreads(endorsements, prevent_duplicates_from: Book.all)
     book = goodreads_book
 
     unless book
@@ -113,6 +119,15 @@ class Book < Airrecord::Table
     self["Author"] = authors.first.name
     self["Categories"] = goodreads_categories.sort
     self["Goodreads Ratings"] = book.work.ratings_count
+    self.endorsements = endorsements.to_enum(:each).map { |endorser| 
+      records = Endorser.all(filter: "{Name} = \"#{endorser}\"")
+      if records.length == 0
+        record = Endorser.new("Name" => endorser)
+        record.create
+      else
+        records[0]
+      end
+    }
 
     difference = HashDiff.diff(before, self.serializable_fields)
 
@@ -144,10 +159,17 @@ class Book < Airrecord::Table
     end
 
 
+    existing_book = prevent_duplicates_from.find { |other| other["ISBN"] == self["ISBN"] }
     if flagged
       Rollbar.warn("Skipping book", title: self["Title"])
-    elsif prevent_duplicates_from.find { |other| other["ISBN"] == self["ISBN"] }
-      $stderr.puts "Skipping #{self["Title"]} due to duplicate"
+    elsif existing_book
+      if existing_book.endorsements.map{|e| e.id} != self.endorsements.map{|e| e.id}
+        $stderr.puts "Updating #{self["Title"]} endorsers"
+        existing_book.endorsements = self.endorsements
+        existing_book.save
+      else
+        $stderr.puts "Skipping #{self["Title"]} due to duplicate"
+      end
     else
       if self.new_record?
         self.create
