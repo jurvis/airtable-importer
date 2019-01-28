@@ -9,7 +9,7 @@ require_relative 'model/book'
 class PinboardImporter
   def import_to_airtable 
     pinboard = Pinboard::Client.new(:token => ENV['PINBOARD_TOKEN'])
-    posts = pinboard.posts(:tag => 'books-test').to_enum(:each).map { |bookmark| 
+    posts = pinboard.posts(:tag => 'books').to_enum(:each).map { |bookmark| 
       if URI(bookmark.href).host =~ /\A(www\.)?amazon\.(com|sg)/
         uri = URI(bookmark.href)
         text = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body
