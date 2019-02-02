@@ -120,10 +120,8 @@ class Book < Airrecord::Table
     self["Categories"] = goodreads_categories.sort
     self["Goodreads Ratings"] = book.work.ratings_count
     self.endorsements = endorsements.to_enum(:each).map { |endorser| 
-      records = Endorser.all(filter: "{Name} = \"#{endorser}\"")
-      if records.length == 0
-        record = Endorser.new("Name" => endorser)
-        record.create
+      if Endorser.all(filter: "{Name} = \"#{endorser}\"").length == 0
+        Endorser.create("Name" => endorser)
       else
         records[0]
       end
