@@ -1,5 +1,6 @@
 require 'hashdiff'
 require 'airrecord'
+require 'goodreads'
 require 'dotenv/load'
 
 Airrecord.api_key = ENV['AIRTABLE_API_KEY']
@@ -120,7 +121,8 @@ class Book < Airrecord::Table
     self["Categories"] = goodreads_categories.sort
     self["Goodreads Ratings"] = book.work.ratings_count
     self.endorsements = endorsements.to_enum(:each).map { |endorser| 
-      if Endorser.all(filter: "{Name} = \"#{endorser}\"").length == 0
+      records = Endorser.all(filter: "{Name} = \"#{endorser}\"") 
+      if records.length == 0
         Endorser.create("Name" => endorser)
       else
         records[0]
