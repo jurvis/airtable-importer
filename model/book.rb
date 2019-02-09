@@ -114,7 +114,7 @@ class Book < Airrecord::Table
     self["Title"] = book.title
     self["ISBN"] = book.isbn13 || self["ISBN"]
     self["Publication Year"] = book.work.original_publication_year.to_s || book.publication_year.to_s
-    self["Goodreads Rating"] = book.average_rating
+    self["Goodreads Rating"] = book.average_rating.to_f
     self["Pages"] = book.num_pages
     authors = [book.authors.author].flatten
     self["Author"] = authors.first.name
