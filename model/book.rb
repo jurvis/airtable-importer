@@ -6,10 +6,10 @@ Airrecord.api_key = ENV['AIRTABLE_API_KEY']
 
 class Book < Airrecord::Table
   class Endorser < Airrecord::Table
-    self.base_key = ENV['AIRTABLE_BASE_KEY']
+    self.base_key = ENV['AIRTABLE_BOOKS_BASE_KEY']
     self.table_name = "Endorsers"
   end
-  self.base_key = ENV['AIRTABLE_BASE_KEY']
+  self.base_key = ENV['AIRTABLE_BOOKS_BASE_KEY']
   self.table_name = "Books"
 
   has_many :endorsements, class: 'Book::Endorser', column: 'Endorsements'

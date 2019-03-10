@@ -9,6 +9,8 @@ gem 'faraday_middleware'
 gem 'hashdiff'
 gem 'dotenv'
 gem 'rollbar'
+gem 'oxford_dictionary'
+gem 'stemmify'
 
 gem 'pry-byebug'
 gem 'rake'

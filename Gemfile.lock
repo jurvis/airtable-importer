@@ -9,13 +9,22 @@ GEM
     airrecord (1.0.2)
       faraday (~> 0.10)
       net-http-persistent (>= 2.9)
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
     byebug (10.0.2)
     coderay (1.1.2)
+    coercible (1.0.0)
+      descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.1.4)
     connection_pool (2.2.2)
+    descendants_tracker (0.0.4)
+      thread_safe (~> 0.3, >= 0.3.1)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.6.0)
+    equalizer (0.0.11)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.12.2)
@@ -35,6 +44,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
+    ice_nine (0.11.2)
     method_source (0.9.2)
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
@@ -50,8 +60,12 @@ GEM
     nokogiri (1.10.1)
       mini_portile2 (~> 2.4.0)
     oauth (0.5.4)
+    oxford_dictionary (1.0.0)
+      plissken (~> 0.1.0)
+      virtus (~> 1.0.5)
     pinboard (1.0.0)
       httparty (= 0.11.0)
+    plissken (0.1.0)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -65,12 +79,18 @@ GEM
       netrc (~> 0.8)
     rollbar (2.18.2)
       multi_json
+    stemmify (0.0.2)
     thread_safe (0.3.6)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
+    virtus (1.0.5)
+      axiom-types (~> 0.1)
+      coercible (~> 1.0)
+      descendants_tracker (~> 0.0, >= 0.0.3)
+      equalizer (~> 0.0, >= 0.0.9)
 
 PLATFORMS
   ruby
@@ -83,10 +103,12 @@ DEPENDENCIES
   goodreads
   hashdiff
   nokogiri
+  oxford_dictionary
   pinboard
   pry-byebug
   rake
   rollbar
+  stemmify
 
 BUNDLED WITH
    2.0.1
