@@ -11,7 +11,9 @@ class ReadwiseImporter
         books: [book]
       )
     }.select { |highlight|
-      highlight.valid?
+      highlight.valid? && Word.is_unique?(highlight.word)
+    }.each {|word|
+      word.transform_root_word
     }
   end
 

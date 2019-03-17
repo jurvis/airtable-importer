@@ -1,8 +1,7 @@
 require 'nokogiri'
-require 'faraday'
+
 require 'pinboard'
 require 'goodreads'
-require 'faraday_middleware'
 
 require_relative 'model/book'
 

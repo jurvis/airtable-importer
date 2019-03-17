@@ -43,6 +43,11 @@ class Word < Airrecord::Table
     word_synonyms_response.lexical_entries.first.entries.first.senses.first.synonyms.map{|s| s.text}.join(", ")
   end
 
+  def self.is_unique?(word)
+    all = Hash[self.all.group_by{|obj| obj["Word"]}.map{ |(word, objs)| [word, objs.first] }]
+    !all.key?(word)
+  end
+
   private
   def word_synonyms_response
     @word_synonyms_response ||= begin 
