@@ -8,6 +8,8 @@ gem 'pinboard'
 gem 'hashdiff'
 gem 'dotenv'
 gem 'rollbar'
+gem 'faraday_middleware'
+gem 'faraday'
 
 gem 'pry-byebug'
 gem 'rake'

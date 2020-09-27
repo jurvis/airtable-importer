@@ -19,6 +19,8 @@ GEM
     dotenv (2.7.6)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware (1.0.0)
+      faraday (~> 1.0)
     goodreads (0.7.0)
       activesupport (>= 3.0)
       hashie (~> 2.0)
@@ -79,6 +81,8 @@ PLATFORMS
 DEPENDENCIES
   airrecord
   dotenv
+  faraday
+  faraday_middleware
   goodreads
   hashdiff
   nokogiri
