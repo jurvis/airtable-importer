@@ -13,7 +13,7 @@ class PinboardImporter
         uri = URI(bookmark.href)
         text = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body
         doc = Nokogiri::HTML(text)
-        isbn = doc.css("#isbn_feature_div > .a-section > :first-child > :nth-child(2)").map{|node| node.text.gsub(/\s+/, "")}[0]
+        isbn = doc.css("#detailBullets_feature_div > ul > li:nth-child(3)").map{ |node| node.text.gsub(/\s+/, "").split(":")[1] }.first
         unless isbn.nil?
           create_record_from_isbn(isbn, bookmark)
         else
