@@ -12,8 +12,13 @@ class PinboardImporter
       if URI(bookmark.href).host =~ /\A(www\.)?amazon\.(com|sg)/
         uri = URI(bookmark.href)
         text = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body
-        isbn = text.match(/(ISBN|ASIN)(-13|-10)?:\s*<\/b>\s*(\w{10,13})/)
-        create_record_from_isbn(isbn[3], bookmark)
+        doc = Nokogiri::HTML(text)
+        isbn = doc.css("#isbn_feature_div > .a-section > :first-child > :nth-child(2)").map{|node| node.text.gsub(/\s+/, "")}[0]
+        unless isbn.nil?
+          create_record_from_isbn(isbn, bookmark)
+        else
+          print(isbn)
+        end
       elsif bookmark.href =~ /goodreads\.com/
         uri = URI(bookmark.href)
         text = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body

@@ -129,7 +129,7 @@ class Book < Airrecord::Table
       end
     }
 
-    difference = HashDiff.diff(before, self.serializable_fields)
+    difference = Hashdiff.diff(before, self.serializable_fields)
 
     flagged = false
     author_ok = true

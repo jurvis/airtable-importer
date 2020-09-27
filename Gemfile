@@ -1,11 +1,10 @@
 source 'https://rubygems.org'
+ruby '2.6.3'
 
 gem 'airrecord'
 gem 'nokogiri'
-gem 'faraday'
 gem 'goodreads'
 gem 'pinboard'
-gem 'faraday_middleware'
 gem 'hashdiff'
 gem 'dotenv'
 gem 'rollbar'
