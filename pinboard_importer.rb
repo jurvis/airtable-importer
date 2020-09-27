@@ -17,7 +17,7 @@ class PinboardImporter
         unless isbn.nil?
           create_record_from_isbn(isbn, bookmark)
         else
-          print(isbn)
+          Rollbar.log('parseError', bookmark.href)
         end
       elsif bookmark.href =~ /goodreads\.com/
         uri = URI(bookmark.href)
