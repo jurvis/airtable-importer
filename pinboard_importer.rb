@@ -16,7 +16,8 @@ class PinboardImporter
         
         prop_string = doc.css("#detailBullets_feature_div > ul > li:nth-child(3)").map{ |node| node.text.gsub(/\s+/, "") }.first
         if prop_string.nil?
-          Rollbar.log('parseError', bookmark.href) 
+          Rollbar.log('parseError', bookmark.href)
+          next
         end
         
         isbn = prop_string.match(/(ISBN|ASIN)(-13|-10)?:\s*\s*(\w{10,13})/)
