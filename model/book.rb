@@ -107,6 +107,7 @@ class Book < Airrecord::Table
 
     unless book
       $stderr.puts "Unable to find book #{self["Title"]}"
+      Rollbar.log('searchError', self["Title"])
       return
     end
 

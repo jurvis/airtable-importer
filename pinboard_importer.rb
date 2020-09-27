@@ -13,11 +13,11 @@ class PinboardImporter
         uri = URI(bookmark.href)
         text = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body
         doc = Nokogiri::HTML(text)
-        isbn = doc.css("#detailBullets_feature_div > ul > li:nth-child(3)").map{ |node| node.text.gsub(/\s+/, "").split(":")[1] }.first
-        unless isbn.nil?
-          create_record_from_isbn(isbn, bookmark)
-        else
+        isbn = doc.css("#detailBullets_feature_div > ul > li:nth-child(3)").map{ |node| node.text.gsub(/\s+/, "") }.first.match(/(ISBN|ASIN)(-13|-10)?:\s*\s*(\w{10,13})/)
+        if isbn.nil? or isbn[3].nil?
           Rollbar.log('parseError', bookmark.href)
+        else
+          create_record_from_isbn(isbn[3], bookmark)
         end
       elsif bookmark.href =~ /goodreads\.com/
         uri = URI(bookmark.href)
