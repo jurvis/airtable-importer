@@ -121,6 +121,7 @@ class Book < Airrecord::Table
     self["Author"] = authors.first.name
     self["Categories"] = goodreads_categories.sort
     self["Goodreads Ratings"] = book.work.ratings_count
+    self["Goodreads URL"] = book.url
     self.endorsements = endorsements.to_enum(:each).map { |endorser| 
       records = Endorser.all(filter: "{Name} = \"#{endorser}\"") 
       if records.length == 0

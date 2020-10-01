@@ -2,6 +2,7 @@ require 'nokogiri'
 require 'faraday'
 require 'pinboard'
 require 'faraday_middleware'
+require 'httply'
 
 require_relative 'model/book'
 
@@ -11,13 +12,11 @@ class PinboardImporter
     posts = pinboard.posts(:tag => 'books').to_enum(:each).map { |bookmark| 
       if URI(bookmark.href).host =~ /\A(www\.)?amazon\.(com|sg)/
         uri = URI(bookmark.href)
-        text = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body
-        doc = Nokogiri::HTML(text)
-        
+        doc = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body
+
         prop_string = doc.css("#detailBullets_feature_div > ul > li:nth-child(3)").map{ |node| node.text.gsub(/\s+/, "") }.first
         if prop_string.nil?
           Rollbar.log('parseError', bookmark.href)
-          next
         end
         
         isbn = prop_string.match(/(ISBN|ASIN)(-13|-10)?:\s*\s*(\w{10,13})/)
@@ -43,11 +42,6 @@ class PinboardImporter
   def client_for(host)
     @clients ||= {}
     return @clients[host] if @clients[host]
-    @clients[host] ||= Faraday.new(:url => host) do |b|
-      b.request :retry, max: 10, interval: 1, interval_randomness: 2, backoff_factor: 2
-      b.use FaradayMiddleware::FollowRedirects
-      b.adapter :net_http_persistent
-      b.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36"
-    end
+    @clients[host] = Httply::Client.new(host: host)
   end
 end
