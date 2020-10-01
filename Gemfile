@@ -10,6 +10,7 @@ gem 'dotenv'
 gem 'rollbar'
 gem 'faraday_middleware'
 gem 'faraday'
+gem 'httply'
 
 gem 'pry-byebug'
 gem 'rake'

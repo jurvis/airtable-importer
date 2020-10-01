@@ -7,6 +7,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
+    agents (0.1.4)
     airrecord (1.0.5)
       faraday (>= 0.10, < 2.0)
       net-http-persistent (>= 2.9)
@@ -35,6 +36,11 @@ GEM
     httparty (0.11.0)
       multi_json (~> 1.0)
       multi_xml (>= 0.5.2)
+    httply (0.2.0)
+      agents (~> 0.1.4)
+      faraday (~> 1.0, >= 1.0.1)
+      faraday_middleware (~> 1.0)
+      multi_xml (~> 0.6.0)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     method_source (1.0.0)
@@ -85,6 +91,7 @@ DEPENDENCIES
   faraday_middleware
   goodreads
   hashdiff
+  httply
   nokogiri
   pinboard
   pry-byebug
