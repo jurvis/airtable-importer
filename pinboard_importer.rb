@@ -12,18 +12,13 @@ class PinboardImporter
     posts = pinboard.posts(:tag => 'books').to_enum(:each).map { |bookmark| 
       if URI(bookmark.href).host =~ /\A(www\.)?amazon\.(com|sg)/
         uri = URI(bookmark.href)
-        doc = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body
 
-        prop_string = doc.css("#detailBullets_feature_div > ul > li:nth-child(3)").map{ |node| node.text.gsub(/\s+/, "") }.first
-        if prop_string.nil?
-          Rollbar.log('parseError', bookmark.href)
-        end
-        
-        isbn = prop_string.match(/(ISBN|ASIN)(-13|-10)?:\s*\s*(\w{10,13})/)
-        if isbn.nil? or isbn[3].nil?
-          Rollbar.log('parseError', bookmark.href)
+        isbn_match = bookmark.href.match(/\/(\w{10})(\/|$|\||\?)/)
+        if isbn_match.nil? or isbn_match[0].nil?
+          puts bookmark.href
+          Rollbar.log("URL Parse Error", bookmark.href)
         else
-          create_record_from_isbn(isbn[3], bookmark)
+          create_record_from_isbn(isbn_match[0], bookmark)
         end
       elsif bookmark.href =~ /goodreads\.com/
         uri = URI(bookmark.href)
