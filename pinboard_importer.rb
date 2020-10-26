@@ -11,22 +11,32 @@ class PinboardImporter
     pinboard = Pinboard::Client.new(:token => ENV['PINBOARD_TOKEN'])
     posts = pinboard.posts(:tag => 'books').to_enum(:each).map { |bookmark| 
       if URI(bookmark.href).host =~ /\A(www\.)?amazon\.(com|sg)/
-        uri = URI(bookmark.href)
+        isbn = get_isbn_from_goodreads(bookmark.href)
 
-        isbn_match = bookmark.href.match(/\/(\w{10})(\/|$|\||\?)/)
-        if isbn_match.nil? or isbn_match[0].nil?
-          puts bookmark.href
+        if isbn.nil?
           Rollbar.log("URL Parse Error", bookmark.href)
         else
-          create_record_from_isbn(isbn_match[0], bookmark)
+          create_record_from_isbn(isbn, bookmark)
         end
       elsif bookmark.href =~ /goodreads\.com/
-        uri = URI(bookmark.href)
-        text = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body
-        doc = Nokogiri::HTML(text)
-        create_record_from_isbn(doc.at('meta[property="books:isbn"]')["content"], bookmark.hash)
+        create_record_from_isbn(get_isbn_from_goodreads(bookmark.href), bookmark.hash)
       end
     }.compact
+  end
+
+  def get_isbn_from_goodreads(url)
+    uri = URI(url)
+    text = client_for("#{uri.scheme}://#{uri.hostname}").get(uri.path).body
+    return text.at('meta[property="books:isbn"]')["content"]
+  end
+
+  def get_isbn_from_amazon(url)
+    isbn_match = url.match(/\/(\w{10})(\/|$|\||\?)/)
+    if isbn_match.nil? or isbn_match[0].nil?
+      return nil
+    else
+      return isbn_match[0].gsub!(/[^0-9A-Za-z]/, '')
+    end
   end
 
   def create_record_from_isbn(isbn, bookmark)

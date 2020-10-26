@@ -14,3 +14,4 @@ gem 'httply'
 
 gem 'pry-byebug'
 gem 'rake'
+gem 'rspec'
