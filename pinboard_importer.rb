@@ -9,9 +9,9 @@ require_relative 'model/book'
 class PinboardImporter
   def import_to_airtable 
     pinboard = Pinboard::Client.new(:token => ENV['PINBOARD_TOKEN'])
-    posts = pinboard.posts(:tag => 'books').to_enum(:each).map { |bookmark| 
+    posts = pinboard.posts(:tag => 'books').to_enum(:each).map { |bookmark|
       if URI(bookmark.href).host =~ /\A(www\.)?amazon\.(com|sg)/
-        isbn = get_isbn_from_goodreads(bookmark.href)
+        isbn = get_isbn_from_amazon(bookmark.href)
 
         if isbn.nil?
           Rollbar.log("URL Parse Error", bookmark.href)
