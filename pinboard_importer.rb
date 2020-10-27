@@ -19,7 +19,7 @@ class PinboardImporter
           create_record_from_isbn(isbn, bookmark)
         end
       elsif bookmark.href =~ /goodreads\.com/
-        create_record_from_isbn(get_isbn_from_goodreads(bookmark.href), bookmark.hash)
+        create_record_from_isbn(get_isbn_from_goodreads(bookmark.href), bookmark)
       end
     }.compact
   end
